@@ -83,10 +83,16 @@ export class UPlotChart extends Component<PlotProps, UPlotChartState> {
       return;
     }
     if (!sameDims(prevProps, this.props)) {
-      this.plotInstance?.setSize({
-        width: Math.floor(this.props.width),
-        height: Math.floor(this.props.height),
-      });
+      if (this.plotInstance) {
+        this.plotInstance.setSize({
+          width: Math.floor(this.props.width),
+          height: Math.floor(this.props.height),
+        });
+      } else {
+        // the plot was skipped on mount while it had no size, so create it now that it has one
+        this.reinitPlot();
+        return;
+      }
     }
     if (!sameData(prevProps, this.props)) {
       this.plotInstance?.setData(this.props.data as AlignedData);
